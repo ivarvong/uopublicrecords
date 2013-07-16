@@ -3,6 +3,7 @@ require 'sucker_punch'
 require 'fog'
 require 'dotenv'
 require 'digest/md5'
+require 'postmark'
 
 Dotenv.load
 
@@ -28,11 +29,20 @@ class RefreshJob
 			if file_exists?(key)
 				puts "...already have #{key}"
 			else 
-				puts save_file(key, raw)
+				public_url = save_file(key, raw)				
+				send_email({link: link, slug: slug, public_url: public_url, text: text})				
+				puts "saved #{public_url}"
 			end
 		end
 
 		puts "RefreshJob: perform took #{Time.now - time_start} seconds" # this could be, like, logged, you know?
+	end
+
+	def send_email(info)
+		client = Postmark::ApiClient.new(ENV['POSTMARK_KEY'])
+		client.deliver(from: 'ivar@ivarvong.com', to: 'ivar@ivarvong.com', 
+				       subject: "UO Public Record change: #{info[:slug]}",
+                       text_body: "#{info[:public_url]}\n\n---\n\n#{info[:text]}")
 	end
 
 	def get_index_links
