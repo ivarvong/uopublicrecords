@@ -40,7 +40,7 @@ class RefreshJob
 
 	def send_email(info)
 		client = Postmark::ApiClient.new(ENV['POSTMARK_KEY'])
-		client.deliver(from: 'ivar@ivarvong.com', to: 'ivar@ivarvong.com', 
+		client.deliver(from: 'ivar@ivarvong.com', to: ENV['SEND_TO'].split(","), 
 				       subject: "UO Public Record change: #{info[:slug]}",
                        text_body: "#{info[:public_url]}\n\n---\n\n#{info[:text]}")
 	end
