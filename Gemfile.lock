@@ -4,6 +4,7 @@ GEM
     builder (3.2.2)
     celluloid (0.14.1)
       timers (>= 1.0.0)
+    dotenv (0.8.0)
     excon (0.6.6)
     fog (0.9.0)
       builder
@@ -45,6 +46,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv
   fog
   nokogiri
   postmark
