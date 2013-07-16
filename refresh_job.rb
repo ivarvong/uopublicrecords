@@ -5,7 +5,7 @@ require 'dotenv'
 require 'digest/md5'
 require 'postmark'
 
-Dotenv.load
+Dotenv.load unless ENV['RACK_ENV'] == 'production'
 
 class RefreshJob
 	include SuckerPunch::Job	

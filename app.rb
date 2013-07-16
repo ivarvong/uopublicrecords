@@ -2,7 +2,8 @@ require './refresh_job'
 
 require 'fog'
 require 'dotenv'
-Dotenv.load
+
+Dotenv.load unless ENV['RACK_ENV'] == 'production'
 
 storage = Fog::Storage.new(:provider => 'AWS', :aws_access_key_id => ENV['ACCESS_KEY'], :aws_secret_access_key => ENV['SECRET_KEY'])		
 $s3 = storage.directories.create(key: ENV['BUCKET'])
