@@ -1,0 +1,19 @@
+/* https://gist.github.com/ivarvong/4650628 */
+{
+  "Statement": [
+    {
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::YOUR_BUCKET_HERE",
+        "arn:aws:s3:::YOUR_BUCKET_HERE/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "*",
+      "Condition": {}
+    }
+  ]
+}
