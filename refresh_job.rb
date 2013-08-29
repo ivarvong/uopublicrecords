@@ -13,6 +13,14 @@ class RefreshJob
 	def initialize		
 		storage = Fog::Storage.new(:provider => 'AWS', :aws_access_key_id => ENV['ACCESS_KEY'], :aws_secret_access_key => ENV['SECRET_KEY'])		
 		@s3 = storage.directories.create(key: ENV['BUCKET'])
+
+		Twitter.configure do |config|
+		  config.consumer_key = ENV['CONSUMER_KEY']
+		  config.consumer_secret = ENV['CONSUMER_SECRET']
+		  config.oauth_token = ENV['ACCESS_TOKEN']
+		  config.oauth_token_secret = ENV['ACCESS_TOKEN_SECRET']
+		end
+
 	end
 
 	def perform
@@ -25,7 +33,7 @@ class RefreshJob
 			slug = link.gsub("/content/", "")
 			text = doc.css('#content').text
 			md5 = Digest::MD5.hexdigest(text)
-			key = "original/#{slug}/#{md5}"
+			key = "original/#{slug}/#{md5}.html"
 			if file_exists?(key)
 				puts "...already have #{key}"
 			else 
@@ -41,8 +49,10 @@ class RefreshJob
 	def send_email(info)
 		client = Postmark::ApiClient.new(ENV['POSTMARK_KEY'])
 		client.deliver(from: 'ivar@ivarvong.com', to: ENV['SEND_TO'].split(","), 
-				       subject: "UO Public Record change: #{info[:slug]}",
+				       subject: "UO Public Record: #{info[:slug]}",
                        text_body: "#{info[:public_url]}\n\n---\n\n#{info[:text]}")
+
+		Twitter.update("#{info[:slug]}: #{info[:public_url]}")
 	end
 
 	def get_index_links
