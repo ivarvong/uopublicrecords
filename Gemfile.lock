@@ -19,10 +19,14 @@ GEM
       nokogiri (>= 1.4.4)
       ruby-hmac
     formatador (0.2.4)
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     json (1.8.0)
     mime-types (1.23)
     mini_portile (0.5.0)
     multi_json (1.7.9)
+    multi_xml (0.5.5)
     multipart-post (1.2.0)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
@@ -55,8 +59,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  celluloid
   dotenv
   fog
+  httparty
   nokogiri
   postmark
   sinatra
