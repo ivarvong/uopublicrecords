@@ -32,15 +32,15 @@ class RefreshJob
 			doc = Nokogiri::HTML(raw)
 			slug = link.gsub("/content/", "")
 			text = doc.css('#content').text
-			title = doc.css('#main h2').text
+			title = doc.css('#content h2').text
 			md5 = Digest::MD5.hexdigest(text)
 			key = "original/#{slug}/#{md5}.html"
 			if file_exists?(key)
-				puts "...already have #{key}"
+				puts "...already have '#{title}' : #{key}"
 			else 
 				public_url = save_file(key, raw)				
 				tell_everyone({link: link, slug: slug, public_url: public_url, text: text, title: title})				
-				puts "saved #{public_url}"
+				puts "saved '#{title}' -- #{public_url}"
 			end
 		end
 
@@ -50,7 +50,7 @@ class RefreshJob
 	def tell_everyone(info)
 		client = Postmark::ApiClient.new(ENV['POSTMARK_KEY'])
 		client.deliver(from: 'ivar@ivarvong.com', to: ENV['SEND_TO'].split(","), 
-				       subject: "UO Public Record: #{info[:title]}",
+				       subject: "[UO Public Records] #{info[:title]}",
                        text_body: "#{info[:public_url]}\n\n---\n\n#{info[:text]}")
 
 		@twitter.update("#{info[:title]}: #{info[:public_url]}")
